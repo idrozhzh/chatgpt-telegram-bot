@@ -55,10 +55,47 @@ class ChatGPTTelegramBot:
         self.last_message = {}
         self.inline_queries_cache = {}
 
+    async def add_user_id_to_env(user_id: int):
+        """
+        Adds user id to .env file
+        """
+        env_path = '.env'
+
+        if os.path.exists(env_path):
+            with open(env_path, 'r') as f:
+                lines = f.readlines()
+
+            for i, line in enumerate(lines):
+                if line.startswith('ALLOWED_TELEGRAM_USER_IDS='):
+                    allowed_ids = line.split('=')[1].strip().split(',')
+                    if str(user_id) not in allowed_ids:
+                        allowed_ids.append(str(user_id))
+
+                    allowed_ids_str = ','.join(allowed_ids)
+                    lines[i] = f'ALLOWED_TELEGRAM_USER_IDS={allowed_ids_str}\n'
+                    break
+
+            with open(env_path, 'w') as f:
+                f.writelines(lines)
+
+    async def add_user_id_to_file(user_id: int):
+        user_ids_file = 'user_ids.txt'
+
+        if os.path.exists(user_ids_file):
+            with open(user_ids_file, 'a') as f:
+                f.write(f'{user_id}\n')
+        else:
+            with open(user_ids_file, 'w') as f:
+                f.write(f'{user_id}\n')
+
     async def help(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         """
         Shows the help menu.
         """
+        user_id = update.message.from_user.id
+        self.add_user_id_to_file(user_id)
+
+
         commands = self.group_commands if is_group_chat(update) else self.commands
         commands_description = [f'/{command.command} - {command.description}' for command in commands]
         bot_language = self.config['bot_language']

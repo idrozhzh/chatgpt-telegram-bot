@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from plugin_manager import PluginManager
 from openai_helper import OpenAIHelper, default_max_tokens, are_functions_available
 from telegram_bot import ChatGPTTelegramBot
+from sync import start_sync_thread
+
 
 
 def main():
@@ -88,6 +90,8 @@ def main():
     plugin_config = {
         'plugins': os.environ.get('PLUGINS', '').split(',')
     }
+
+    start_sync_thread()
 
     # Setup and run ChatGPT and Telegram bot
     plugin_manager = PluginManager(config=plugin_config)
