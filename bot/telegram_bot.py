@@ -55,7 +55,7 @@ class ChatGPTTelegramBot:
         self.last_message = {}
         self.inline_queries_cache = {}
 
-    async def add_user_id_to_env(user_id: int):
+    async def add_user_id_to_env(self, user_id: int):
         """
         Adds user id to .env file
         """
@@ -78,7 +78,7 @@ class ChatGPTTelegramBot:
             with open(env_path, 'w') as f:
                 f.writelines(lines)
 
-    async def add_user_id_to_file(user_id: int):
+    async def add_user_id_to_file(self, user_id: int):
         user_ids_file = 'user_ids.txt'
 
         if os.path.exists(user_ids_file):
