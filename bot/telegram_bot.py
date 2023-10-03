@@ -83,10 +83,10 @@ class ChatGPTTelegramBot:
 
         if os.path.exists(user_ids_file):
             with open(user_ids_file, 'a') as f:
-                f.write(f',{user_id}')
+                f.write(f'{user_id},')
         else:
             with open(user_ids_file, 'w') as f:
-                f.write(f',{user_id}')
+                f.write(f'{user_id},')
 
     async def help(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         """
