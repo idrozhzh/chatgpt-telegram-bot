@@ -93,7 +93,7 @@ class ChatGPTTelegramBot:
         Shows the help menu.
         """
         user_id = update.message.from_user.id
-        self.add_user_id_to_file(user_id)
+        await self.add_user_id_to_file(user_id)
 
 
         commands = self.group_commands if is_group_chat(update) else self.commands
