@@ -13,7 +13,7 @@ def sync_user_ids():
         user_ids = [line.strip() for line in f.readlines() if line.strip()]
 
     if user_ids:
-        env = dotenv_values(".env")
+        env = dotenv_values("../.env")
         allowed_ids = env.get('ALLOWED_TELEGRAM_USER_IDS', '').split(',')
 
         if len(allowed_ids) < len(user_ids):
