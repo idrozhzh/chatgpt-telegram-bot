@@ -3,39 +3,30 @@ from threading import Thread
 import os
 from datetime import datetime, timedelta
 import subprocess
+from dotenv import dotenv_values
 
 
 def sync_user_ids():
-    last_sync = datetime.min
-    sync_interval = timedelta(seconds=1)  # раз в секунду
+    user_ids_file = 'user_ids.txt'
 
-    if datetime.now() - last_sync > sync_interval:
-        last_sync = datetime.now()
+    with open(user_ids_file, 'r') as f:
+        user_ids = [line.strip() for line in f.readlines() if line.strip()]
 
-        user_ids_file = 'user_ids.txt'
-        env_file = '.env'
+    if user_ids:
+        env = dotenv_values(".env")
+        allowed_ids = env.get('ALLOWED_TELEGRAM_USER_IDS', '').split(',')
 
-        with open(user_ids_file, 'r') as f:
-            user_ids = [line.strip() for line in f.readlines() if line.strip()]
+        if len(allowed_ids) < len(user_ids):
+            allowed_ids.extend(user_ids)
+            allowed_ids = list(set(allowed_ids))
 
-        if user_ids:
-            with open(env_file, 'r') as f:
-                lines = f.readlines()
+            env['ALLOWED_TELEGRAM_USER_IDS'] = ','.join(allowed_ids)
+            with open('.env', 'w') as f:
+                for k, v in env.items():
+                    f.write(f"{k}={v}\n")
 
-            for i, line in enumerate(lines):
-                if line.startswith('ALLOWED_TELEGRAM_USER_IDS'):
-                    allowed_ids = line.split('=')[1].strip().split(',')
-                    allowed_ids.extend(user_ids)
-                    allowed_ids = list(set(allowed_ids))  # убрать дубликаты
-
-                    allowed_ids_str = ','.join(allowed_ids)
-                    lines[i] = f'ALLOWED_TELEGRAM_USER_IDS={allowed_ids_str}\n'
-
-                    with open(env_file, 'w') as f:
-                        f.write(lines)
-
-                    print('.env file updated, restarting docker containers...')
-                    subprocess.run(["docker-compose", "restart"])
+            print('.env file updated, restarting docker containers...')
+            subprocess.run(["docker-compose", "restart"])
 
 
 def start_sync_thread():
