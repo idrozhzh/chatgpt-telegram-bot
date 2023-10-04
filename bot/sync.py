@@ -29,7 +29,8 @@ def sync_user_ids():
                     if len(current_allowed_ids) < len(user_ids):
                         current_allowed_ids.extend(user_ids)
                         current_allowed_ids = list(set(current_allowed_ids))
-                        env.append(f"{key}={','.join(current_allowed_ids)}\n")
+                        updated_value = ','.join(current_allowed_ids) if current_allowed_ids else ""
+                        env.append(f"{key}={updated_value}\n")
                         update_allowed_ids = True
                 else:
                     env.append(line)
