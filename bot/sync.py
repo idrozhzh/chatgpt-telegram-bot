@@ -21,7 +21,7 @@ def sync_user_ids():
             allowed_ids = list(set(allowed_ids))
 
             env['ALLOWED_TELEGRAM_USER_IDS'] = ','.join(allowed_ids)
-            with open('.env', 'w') as f:
+            with open('../.env', 'w') as f:
                 for k, v in env.items():
                     f.write(f"{k}={v}\n")
 
