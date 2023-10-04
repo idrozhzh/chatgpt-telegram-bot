@@ -10,20 +10,33 @@ def sync_user_ids():
     user_ids_file = 'user_ids.txt'
 
     with open(user_ids_file, 'r') as f:
-        user_ids = [line.strip() for line in f.readlines() if line.strip()]
+        user_ids = [value.strip() for line in f.readlines() for value in line.strip().split(',') if value.strip()]
 
     if user_ids:
-        env = dotenv_values("../.env")
-        allowed_ids = env.get('ALLOWED_TELEGRAM_USER_IDS', '').split(',')
+        with open('../.env', 'r') as f:
+            env_lines = f.readlines()
 
-        if len(allowed_ids) < len(user_ids):
-            allowed_ids.extend(user_ids)
-            allowed_ids = list(set(allowed_ids))
+        env = []
+        update_allowed_ids = False
 
-            env['ALLOWED_TELEGRAM_USER_IDS'] = ','.join(allowed_ids)
+        for line in env_lines:
+            if line.startswith('#') or '=' not in line:
+                env.append(line)
+            else:
+                key, value = line.strip().split('=', 1)
+                if key.strip() == 'ALLOWED_TELEGRAM_USER_IDS':
+                    current_allowed_ids = value.split(',')
+                    if len(current_allowed_ids) < len(user_ids):
+                        current_allowed_ids.extend(user_ids)
+                        current_allowed_ids = list(set(current_allowed_ids))
+                        env.append(f"{key}={','.join(current_allowed_ids)}\n")
+                        update_allowed_ids = True
+                else:
+                    env.append(line)
+
+        if update_allowed_ids:
             with open('../.env', 'w') as f:
-                for k, v in env.items():
-                    f.write(f"{k}={v}\n")
+                f.writelines(env)
 
             print('.env file updated, restarting docker containers...')
             subprocess.run(["docker-compose", "restart"])
