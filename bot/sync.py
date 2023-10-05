@@ -1,13 +1,10 @@
 import time
 from threading import Thread
 import os
-from datetime import datetime, timedelta
-import subprocess
-from dotenv import dotenv_values
 
 
 def restart_docker_compose_service(service_name):
-    os.system(f"docker-compose restart {service_name}")
+    os.system(f"docker restart {service_name}")
 
 
 def sync_user_ids():
