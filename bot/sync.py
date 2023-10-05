@@ -13,7 +13,7 @@ def sync_user_ids():
         user_ids = [value.strip() for line in f.readlines() for value in line.strip().split(',') if value.strip()]
 
     if user_ids:
-        with open('../.env', 'r') as f:
+        with open('.env', 'r') as f:
             env_lines = f.readlines()
 
         env = []
@@ -25,7 +25,7 @@ def sync_user_ids():
             else:
                 key, value = line.strip().split('=', 1)
                 if key.strip() == 'ALLOWED_TELEGRAM_USER_IDS':
-                    current_allowed_ids = value.split(',')
+                    current_allowed_ids = value.strip().split(',')
                     if len(current_allowed_ids) < len(user_ids):
                         current_allowed_ids.extend(user_ids)
                         current_allowed_ids = list(set(current_allowed_ids))
@@ -36,7 +36,7 @@ def sync_user_ids():
                     env.append(line)
 
         if update_allowed_ids:
-            with open('../.env', 'w') as f:
+            with open('.env', 'w') as f:
                 f.writelines(env)
 
             print('.env file updated, restarting docker containers...')
