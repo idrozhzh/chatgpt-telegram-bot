@@ -2,7 +2,7 @@ import time
 from threading import Thread
 import os
 from datetime import datetime, timedelta
-import docker
+import subprocess
 from dotenv import dotenv_values
 
 
@@ -40,9 +40,7 @@ def sync_user_ids():
                 f.writelines(env)
 
             print('.env file updated, restarting docker containers...')
-            client = docker.from_env()
-            container = client.containers.get("container_name")
-            container.kill(signal=docker.types.SIGKILL)
+            subprocess.run(["docker-compose", "restart"])
 
 
 def start_sync_thread():
