@@ -78,8 +78,7 @@ class ChatGPTTelegramBot:
             with open(env_path, 'w') as f:
                 f.writelines(lines)
 
-    @staticmethod
-    async def add_user_id_to_file(user_id: int):
+    async def add_user_id_to_file(self, user_id: int):
 
         user_ids_file = 'user_ids.txt'
 
