@@ -6,6 +6,10 @@ import subprocess
 from dotenv import dotenv_values
 
 
+def restart_docker_compose_service(service_name):
+    os.system(f"docker-compose restart {service_name}")
+
+
 def sync_user_ids():
     user_ids_file = 'user_ids.txt'
 
@@ -40,7 +44,7 @@ def sync_user_ids():
                 f.writelines(env)
 
             print('.env file updated, restarting docker containers...')
-            subprocess.run(["docker-compose", "restart"])
+            restart_docker_compose_service("chatgpt-telegram-bot-chatgpt-telegram-bot-1")
 
 
 def start_sync_thread():
