@@ -1,10 +1,21 @@
 import time
 from threading import Thread
-import os
+# import os
+import docker
 
+
+# def restart_docker_compose_service(service_name):
+#     os.system(f"docker restart {service_name}")
 
 def restart_docker_compose_service(service_name):
-    os.system(f"docker restart {service_name}")
+    client = docker.from_env()
+
+    try:
+        container = client.containers.get(service_name)
+        container.restart()
+        print(f"Service {service_name} restarted.")
+    except Exception as e:
+        print(f"Docker couldn't restart: {e}.")
 
 
 def sync_user_ids():
@@ -41,6 +52,7 @@ def sync_user_ids():
                 f.writelines(env)
 
             print('.env file updated, restarting docker containers...')
+            # restart_docker_compose_service("chatgpt-telegram-bot-chatgpt-telegram-bot-1")
             restart_docker_compose_service("chatgpt-telegram-bot-chatgpt-telegram-bot-1")
 
 

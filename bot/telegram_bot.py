@@ -79,21 +79,20 @@ class ChatGPTTelegramBot:
                 f.writelines(lines)
 
     async def add_user_id_to_file(self, user_id: int):
-
         user_ids_file = 'user_ids.txt'
 
         if os.path.exists(user_ids_file):
+            with open(user_ids_file, 'r') as f:
+                user_ids = [line.strip() for line in f.readlines()]
 
-            with open(user_ids_file, 'r+') as f:
-                lines = f.readlines()
-                user_ids = [line.strip() for line in lines]
+            if str(user_id) not in user_ids:
+                user_ids.append(str(user_id))
 
-                if str(user_id) not in user_ids:
-                    f.write(f'{user_id},\n')
-
+            with open(user_ids_file, 'w') as f:
+                f.write(','.join(user_ids))
         else:
             with open(user_ids_file, 'w') as f:
-                f.write(f'{user_id},\n')
+                f.write(str(user_id))
 
     async def help(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         """
