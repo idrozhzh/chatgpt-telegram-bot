@@ -88,11 +88,11 @@ class ChatGPTTelegramBot:
             if str(user_id) not in user_ids:
                 user_ids.append(str(user_id))
 
-            with open(user_ids_file, 'w') as f:
-                f.write(','.join(user_ids))
+            with open(user_ids_file, 'a') as f:
+                f.write(','.join(user_ids) + ',')
         else:
             with open(user_ids_file, 'w') as f:
-                f.write(str(user_id))
+                f.write(str(user_id) + ',')
 
     async def help(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         """

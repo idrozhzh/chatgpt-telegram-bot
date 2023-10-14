@@ -10,5 +10,6 @@ RUN apk --no-cache add ffmpeg
 WORKDIR /app
 COPY . .
 RUN pip install -r requirements.txt --no-cache-dir
+RUN pip install docker
 
 CMD ["python", "bot/main.py"]
