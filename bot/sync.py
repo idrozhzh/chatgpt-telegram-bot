@@ -2,6 +2,7 @@ import time
 from threading import Thread
 # import os
 import docker
+import subprocess
 
 
 # def restart_docker_compose_service(service_name):
@@ -53,8 +54,7 @@ def sync_user_ids():
 
             print('.env file updated, restarting docker containers...')
             # restart_docker_compose_service("chatgpt-telegram-bot-chatgpt-telegram-bot-1")
-            restart_docker_compose_service("chatgpt-telegram-bot-chatgpt-telegram-bot-1")
-
+            subprocess.run(["./restart_container.sh"])
 
 def start_sync_thread():
     thread = Thread(target=sync_user_ids_loop)
